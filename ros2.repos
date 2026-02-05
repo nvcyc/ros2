@@ -161,8 +161,8 @@ repositories:
     version: rolling
   ros/class_loader:
     type: git
-    url: https://github.com/ros/class_loader.git
-    version: rolling
+    url: https://github.com/karsten-nvidia/class_loader.git
+    version: fix-circular-dependency-remove-ament-cmake-ros
   ros/kdl_parser:
     type: git
     url: https://github.com/ros/kdl_parser.git
