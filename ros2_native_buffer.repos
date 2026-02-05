@@ -1,21 +1,25 @@
 repositories:
   ros2/common_interfaces:
     type: git
-    url: https://github.com/ros2/common_interfaces.git
+    url: git@github.com:ros2/common_interfaces.git
     version: rolling
   ros2/rclpy:
     type: git
-    url: https://github.com/nvcyc/rclpy.git
+    url: git@github.com:nvcyc/rclpy.git
     version: rolling-native-buffer
   ros2/rmw_zenoh:
     type: git
-    url: https://github.com/nvcyc/rmw_zenoh.git
+    url: git@github.com:nvcyc/rmw_zenoh.git
     version: rolling-native-buffer
   ros2/rosidl:
     type: git
-    url: https://github.com/nvcyc/rosidl.git
+    url: git@github.com:nvcyc/rosidl.git
     version: rolling-native-buffer
   ros2/rosidl_typesupport_fastrtps:
     type: git
-    url: https://github.com/nvcyc/rosidl_typesupport_fastrtps.git
+    url: git@github.com:nvcyc/rosidl_typesupport_fastrtps.git
+    version: rolling-native-buffer
+ ros2/rcl_buffer:
+    type: git
+    url: git@github.com:nvcyc/rcl_buffer.git
     version: rolling-native-buffer

@@ -1,5 +1,5 @@
 Install some Rolling specific packages that are missing from the dev container.
-`sudo apt update && sudo apt install ros-rolling-ros2cli ros-rolling-ros2run`
+`sudo apt update && sudo apt install ros-rolling-ros2cli ros-rolling-ros2run ros-rolling-launch-ros ros-rolling-launch-testing ros-rolling-launch-testing-ament-cmake ros-rolling-rclcpp-components`
 
 Set up custom repositories:
 `vcs import src < ros2_native_buffer.repos`
@@ -19,5 +19,9 @@ Then install:
 Then build with the packaegs you desired with colcon build again:
 `colcon build --symlink-install --allow-overriding $(colcon list --names-only --base-paths /workspaces/ros2/src | tr '\n' ' ')`
 
-Run Zenoh server:
+Run Zenoh server in a separate terminal:
 `ros2 run rmw_zenoh_cpp rmw_zenohd`
+
+Run tests:
+- `export RCL_LOGGING_IMPLEMENTATION=rcl_logging_noop && source install/setup.bash && timeout 30 ./install/test_buffer_compatibility/lib/test_buffer_compatibility/test_image_pubsub`
+- `launch_test src/ros2/rcl_buffer/test_rcl_buffer/test/test_test_backend_image_pubsub_launch.py`
