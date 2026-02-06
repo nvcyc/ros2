@@ -259,6 +259,10 @@ repositories:
     type: git
     url: https://github.com/ros2/rcl.git
     version: rolling
+  ros2/rcl_buffer:
+    type: git
+    url: https://github.com/nvcyc/rcl_buffer.git
+    version: rolling-native-buffer
   ros2/rcl_interfaces:
     type: git
     url: https://github.com/ros2/rcl_interfaces.git
@@ -273,8 +277,8 @@ repositories:
     version: rolling
   ros2/rclpy:
     type: git
-    url: https://github.com/ros2/rclpy.git
-    version: rolling
+    url: https://github.com/nvcyc/rclpy.git
+    version: rolling-native-buffer
   ros2/rcpputils:
     type: git
     url: https://github.com/ros2/rcpputils.git
@@ -317,8 +321,8 @@ repositories:
     version: rolling
   ros2/rmw_zenoh:
     type: git
-    url: https://github.com/ros2/rmw_zenoh.git
-    version: rolling
+    url: https://github.com/nvcyc/rmw_zenoh.git
+    version: rolling-native-buffer
   ros2/ros2_tracing:
     type: git
     url: https://github.com/ros2/ros2_tracing.git
@@ -341,8 +345,8 @@ repositories:
     version: rolling
   ros2/rosidl:
     type: git
-    url: https://github.com/ros2/rosidl.git
-    version: rolling
+    url: https://github.com/nvcyc/rosidl.git
+    version: rolling-native-buffer
   ros2/rosidl_core:
     type: git
     url: https://github.com/ros2/rosidl_core.git
@@ -377,8 +381,8 @@ repositories:
     version: rolling
   ros2/rosidl_typesupport_fastrtps:
     type: git
-    url: https://github.com/ros2/rosidl_typesupport_fastrtps.git
-    version: rolling
+    url: https://github.com/nvcyc/rosidl_typesupport_fastrtps.git
+    version: rolling-native-buffer
   ros2/rpyutils:
     type: git
     url: https://github.com/ros2/rpyutils.git
