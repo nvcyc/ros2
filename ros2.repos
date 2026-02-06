@@ -61,8 +61,8 @@ repositories:
     version: rolling
   osrf/osrf_testing_tools_cpp:
     type: git
-    url: https://github.com/osrf/osrf_testing_tools_cpp.git
-    version: rolling
+    url: https://github.com/karsten-nvidia/osrf_testing_tools_cpp.git
+    version: fix-sframe-linking
   ros-perception/image_common:
     type: git
     url: https://github.com/ros-perception/image_common.git
