@@ -24,6 +24,10 @@ list = { cmd = "colcon list --names-only", description = "List all available pac
 clean = { cmd = "rm -rf build install log", description = "Remove build artifacts" }
 distclean = { cmd = "scripts/distclean.py", description = "Clean build artifacts and source repositories" }
 
+[target.linux-64.activation.env]
+LDFLAGS="$LDFLAGS -L$CONDA_PREFIX/x86_64-conda-linux-gnu/sysroot/lib64 -Wl,--no-as-needed -lpthread"
+PYTHONPYCACHEPREFIX="$PIXI_PROJECT_ROOT/build/__pycache__"
+
 [target.win-64.activation.env]
 QT_QPA_PLATFORM_PLUGIN_PATH="%cd%\\.pixi\\envs\\default\\Library\\plugins\\platforms"
 
@@ -160,4 +164,24 @@ yaml-cpp = "==0.8.0"
 yamllint = "==1.33.0"
 yaml = "==0.2.5"
 zipp = "==1.0.0"
-zstd = "~=1.5.5"
+zstd = "==1.5.6"
+
+[pypi-dependencies]
+compdb = "==0.2.0"
+
+[target.linux-64.dependencies]
+bash = "==5.2.37"
+coreutils = "==9.5"
+make = "==4.4.1"
+sed = "==4.9"
+libacl = "==2.3.2"
+gcc_linux-64 = "==13.4.0"
+gxx_linux-64 = "==13.4.0"
+binutils_linux-64 = "==2.45"
+mesa-libgl-devel-cos7-x86_64 = "==18.3.4"
+libglvnd-glx-cos7-x86_64 = "==1.0.1"
+lttng-ust = "==2.13.9"
+xorg-libxt = "==1.3.0"
+xorg-libxaw = "==1.0.14"
+pthread-stubs = "==0.4"
+
