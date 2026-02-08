@@ -69,6 +69,8 @@ def main():
                         help='Colcon command to run')
     parser.add_argument('packages', nargs='*',
                         help='Package name(s) to build or test (empty means all)')
+    parser.add_argument('--tests-to-run', type=str,
+                        help='Regex pattern to select specific tests within packages (for test commands)')
 
     args = parser.parse_args()
 
@@ -109,6 +111,10 @@ def main():
     # Add package selection if packages specified
     if args.packages:
         cmd.extend([f"--{config['package_arg']}"] + args.packages)
+
+    # Add test selection if specified (for test commands only)
+    if args.tests_to_run and args.command in ['test', 'test-up-to']:
+        cmd.extend(['--ctest-args', '-R', args.tests_to_run])
 
     # Add parallel workers to colcon
     if parallel_workers:
