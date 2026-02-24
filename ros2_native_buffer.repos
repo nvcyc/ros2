@@ -23,3 +23,19 @@ repositories:
     type: git
     url: git@github.com:nvcyc/rclpy.git
     version: rolling-native-buffer
+  ros2/rclcpp:
+    type: git
+    url: git@github.com:nvcyc/rclcpp.git
+    version: rolling-native-buffer
+  ros2/rmw:
+    type: git
+    url: git@github.com:nvcyc/rmw.git
+    version: rolling-native-buffer
+  ros2/rosidl_python:
+    type: git
+    url: git@github.com:nvcyc/rosidl_python.git
+    version: rolling-native-buffer
+  ros2/rosidl_runtime_py
+    type: git
+    url: git@github.com:nvcyc/rosidl_runtime_py.git
+    version: rolling-native-buffer
