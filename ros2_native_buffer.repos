@@ -15,7 +15,7 @@ repositories:
     type: git
     url: git@github.com:nvcyc/rosidl_typesupport_fastrtps.git
     version: rolling-native-buffer
- ros2/rcl_buffer:
+  ros2/rcl_buffer:
     type: git
     url: git@github.com:nvcyc/rcl_buffer.git
     version: rolling-native-buffer
@@ -35,7 +35,11 @@ repositories:
     type: git
     url: git@github.com:nvcyc/rosidl_python.git
     version: rolling-native-buffer
-  ros2/rosidl_runtime_py
+  ros2/rosidl_runtime_py:
     type: git
     url: git@github.com:nvcyc/rosidl_runtime_py.git
+    version: rolling-native-buffer
+  ros2/rmw_cyclonedds:
+    type: git
+    url: git@github.com:nvcyc/rmw_cyclonedds.git
     version: rolling-native-buffer
