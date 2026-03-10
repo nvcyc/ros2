@@ -309,8 +309,8 @@ repositories:
     version: rolling
   ros2/rmw_fastrtps:
     type: git
-    url: https://github.com/ros2/rmw_fastrtps.git
-    version: rolling
+    url: https://github.com/nvcyc/rmw_fastrtps.git
+    version: rolling-native-buffer
   ros2/rmw_implementation:
     type: git
     url: https://github.com/ros2/rmw_implementation.git

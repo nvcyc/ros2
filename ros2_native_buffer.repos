@@ -43,3 +43,7 @@ repositories:
     type: git
     url: git@github.com:nvcyc/rmw_cyclonedds.git
     version: rolling-native-buffer
+  ros2/rmw_fastrtps:
+    type: git
+    url: git@github.com:nvcyc/rmw_fastrtps.git
+    version: rolling-native-buffer
