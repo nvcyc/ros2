@@ -193,7 +193,7 @@ repositories:
     version: rolling
   ros/urdfdom_headers:
     type: git
-    url: https://github.com/karsten-nvidia/urdfdom_headers.git
+    url: https://github.com/ros/urdfdom_headers.git
     version: rolling
   ros2-rust/rosidl_rust:
     type: git
