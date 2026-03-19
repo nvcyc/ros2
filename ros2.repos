@@ -161,8 +161,8 @@ repositories:
     version: rolling
   ros/class_loader:
     type: git
-    url: https://github.com/nvcyc/class_loader.git
-    version: rolling-native-buffer
+    url: https://github.com/ros/class_loader.git
+    version: rolling
   ros/kdl_parser:
     type: git
     url: https://github.com/ros/kdl_parser.git
@@ -342,7 +342,7 @@ repositories:
   ros2/rosidl_core:
     type: git
     url: https://github.com/ros2/rosidl_core.git
-    version: rolling
+    version: native_buffer/12-rosidl_buffer_py
   ros2/rosidl_dds:
     type: git
     url: https://github.com/ros2/rosidl_dds.git
