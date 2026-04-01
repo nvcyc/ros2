@@ -338,7 +338,7 @@ repositories:
   ros2/rosidl:
     type: git
     url: https://github.com/ros2/rosidl.git
-    version: native_buffer/10-rosidl_buffer_backend_registry
+    version: native_buffer/all-prs
   ros2/rosidl_core:
     type: git
     url: https://github.com/ros2/rosidl_core.git
