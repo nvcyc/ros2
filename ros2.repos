@@ -298,7 +298,7 @@ repositories:
   ros2/rmw_cyclonedds:
     type: git
     url: https://github.com/ros2/rmw_cyclonedds.git
-    version: native_buffer/11-rmw_cyclonedds-new_dds
+    version: rolling
   ros2/rmw_dds_common:
     type: git
     url: https://github.com/ros2/rmw_dds_common.git
@@ -415,7 +415,3 @@ repositories:
     type: git
     url: https://github.com/ros2/yaml_cpp_vendor.git
     version: rolling
-  ros2/rcl_buffer:
-    type: git
-    url: https://github.com/nvcyc/rcl_buffer.git
-    version: rolling-native-buffer
