@@ -17,6 +17,7 @@ pyqt6-sip = ">=13.0,<14"
 clone = { cmd = "vcs import --input ros2.repos src", description = "Clone ROS 2 source repositories", outputs = [ "src/ros2/rcl/README.md"] }
 pull = { cmd = "vcs pull src", description = "Pull latest changes from all source repositories", depends-on = ["clone"] }
 build = { cmd = "scripts/colcon_wrapper.py build {{ packages }}", description = "Build packages and their dependencies", clean-env = true, args = [{arg = "packages", default = ""}], depends-on = ["clone"] }
+test-only = { cmd = "scripts/colcon_wrapper.py test {{ packages }} {% if tests_to_run %}--tests-to-run {{ tests_to_run }}{% endif %}", description = "Run tests for specific packages", clean-env = true, args = [{arg = "packages", default = ""}, {arg = "tests_to_run", default = ""}], depends-on = [] }
 test = { cmd = "scripts/colcon_wrapper.py test {{ packages }} {% if tests_to_run %}--tests-to-run {{ tests_to_run }}{% endif %}", description = "Run tests for specific packages", clean-env = true, args = [{arg = "packages", default = ""}, {arg = "tests_to_run", default = ""}], depends-on = [{task = "build", args = [{packages = "{{ packages }}"}]}] }
 test-up-to = { cmd = "scripts/colcon_wrapper.py test-up-to {{ packages }} {% if tests_to_run %}--tests-to-run {{ tests_to_run }}{% endif %}", description = "Test packages and their dependencies", clean-env = true, args = [{arg = "packages", default = ""}, {arg = "tests_to_run", default = ""}], depends-on = [{task = "build", args = [{packages = "{{ packages }}"}]}] }
 compile-commands = { cmd = "compdb -p build list > compile_commands.json", description = "Generate compile_commands.json for IDE integration", args = [{arg = "packages", default = ""}], depends-on = [{task = "build", args = [{packages = "{{ packages }}"}]}] }
@@ -27,6 +28,8 @@ distclean = { cmd = "scripts/distclean.py", description = "Clean build artifacts
 [target.linux-64.activation.env]
 LDFLAGS="$LDFLAGS -L$CONDA_PREFIX/x86_64-conda-linux-gnu/sysroot/lib64 -Wl,--no-as-needed -lpthread"
 PYTHONPYCACHEPREFIX="$PIXI_PROJECT_ROOT/build/__pycache__"
+# Help CMake's FindCUDAToolkit locate the conda-forge-provided CUDA install.
+CUDAToolkit_ROOT="$CONDA_PREFIX"
 
 [target.win-64.activation.env]
 QT_QPA_PLATFORM_PLUGIN_PATH="%cd%\\.pixi\\envs\\default\\Library\\plugins\\platforms"
@@ -164,4 +167,12 @@ lttng-ust = "==2.13.9"
 xorg-libxt = "==1.3.0"
 xorg-libxaw = "==1.0.14"
 pthread-stubs = "==0.4"
+# CUDA toolkit components (from conda-forge) needed to build the
+# cuda_buffer / cuda_buffer_backend packages. The code uses only the CUDA
+# runtime and driver APIs from C++ (no .cu files), but CMake's
+# FindCUDAToolkit still requires nvcc to discover the toolkit root.
+cuda-version = "==12.6"
+cuda-nvcc = "12.6.*"
+cuda-cudart-dev = "12.6.*"
+cuda-driver-dev = "12.6.*"
 
