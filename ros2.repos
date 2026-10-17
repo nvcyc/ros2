@@ -65,9 +65,9 @@ repositories:
     version: main
   osrf/osrf_testing_tools_cpp:
     type: git
-    # Temporary until osrf/osrf_testing_tools_cpp#97 is merged.
+    # Vendor refresh maintained separately from the original SFrame fix PR.
     url: https://github.com/nvcyc/osrf_testing_tools_cpp.git
-    version: fix-sframe
+    version: vendor-backward-cpp-static-bfd
   ros-perception/image_common:
     type: git
     url: https://github.com/ros-perception/image_common.git
