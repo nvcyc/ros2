@@ -57,77 +57,71 @@ def load_env_file(repo_root):
                 os.environ[key] = value
 
 
+def colcon_command(command, packages, parallel_workers, tests_to_run=None):
+    """Construct a colcon invocation without going through a shell."""
+    if command == 'build':
+        cmd = ['colcon', 'build', '--symlink-install',
+               '--ament-cmake-args', '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON']
+        selection = '--packages-up-to'
+    else:
+        cmd = ['colcon', 'test', '--return-code-on-test-failure',
+               '--event-handlers', 'console_cohesion+']
+        selection = '--packages-up-to' if command == 'test-up-to' else '--packages-select'
+    if packages:
+        cmd.extend([selection, *packages])
+    if parallel_workers:
+        cmd.extend(['--parallel-workers', parallel_workers])
+    if tests_to_run:
+        cmd.extend(['--ctest-args', '-R', tests_to_run])
+    return cmd
+
+
 def main():
-    """Main entry point for the colcon wrapper."""
-    # Load environment variables from .env file if it exists
+    """Build or test any number of packages; no package names means all."""
     repo_root = find_repo_root()
     if repo_root:
         load_env_file(repo_root)
 
     parser = argparse.ArgumentParser(description='Wrapper for colcon operations')
-    parser.add_argument('command', choices=['build', 'test', 'test-up-to'],
-                        help='Colcon command to run')
-    parser.add_argument('packages', nargs='*',
-                        help='Package name(s) to build or test (empty means all)')
-    parser.add_argument('--tests-to-run', type=str,
-                        help='Regex pattern to select specific tests within packages (for test commands)')
+    parser.add_argument('command', choices=['build', 'test', 'test-up-to', 'compile-commands'])
+    parser.add_argument('packages', nargs='*', help='Package names (empty means all)')
+    parser.add_argument('--tests-to-run', help='CTest name regex (test commands only)')
+    parser.add_argument('--build-first', action='store_true',
+                        help='Build selected packages and dependencies before testing')
+    args = parser.parse_intermixed_args()
+    testing = args.command in ('test', 'test-up-to')
+    if not testing and (args.tests_to_run is not None or args.build_first):
+        parser.error('--tests-to-run and --build-first require a test command')
 
-    args = parser.parse_args()
-
-    # Map wrapper commands to colcon commands and package selection modes
-    command_config = {
-        'build': {
-            'colcon_cmd': 'build',
-            'package_arg': 'packages-up-to',
-            'extra_args': ['--symlink-install',
-                          '--ament-cmake-args', '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON']
-        },
-        'test': {
-            'colcon_cmd': 'test',
-            'package_arg': 'packages-select',
-            'extra_args': ['--event-handlers', 'console_cohesion+']
-        },
-        'test-up-to': {
-            'colcon_cmd': 'test',
-            'package_arg': 'packages-up-to',
-            'extra_args': ['--event-handlers', 'console_cohesion+']
-        }
-    }
-
-    config = command_config[args.command]
-
-    # Setup parallel workers environment variables
     parallel_workers = os.environ.get('PIXI_PARALLEL_WORKERS', '')
     if parallel_workers:
         os.environ['CMAKE_BUILD_PARALLEL_LEVEL'] = parallel_workers
         os.environ['MAKEFLAGS'] = f'-j{parallel_workers}'
 
-    # Build the colcon command
-    cmd = ['colcon', config['colcon_cmd']]
-
-    # Add extra arguments (build options or test event handlers)
-    cmd.extend(config['extra_args'])
-
-    # Add package selection if packages specified
-    if args.packages:
-        cmd.extend([f"--{config['package_arg']}"] + args.packages)
-
-    # Add test selection if specified (for test commands only)
-    if args.tests_to_run and args.command in ['test', 'test-up-to']:
-        cmd.extend(['--ctest-args', '-R', args.tests_to_run])
-
-    # Add parallel workers to colcon
-    if parallel_workers:
-        cmd.extend(['--parallel-workers', parallel_workers])
-
-    # Execute the command
     try:
-        result = subprocess.run(cmd, check=False)
-        sys.exit(result.returncode)
-    except Exception as e:
-        print(f"Error executing colcon {args.command}: {e}", file=sys.stderr)
-        sys.exit(1)
+        if args.build_first or args.command == 'compile-commands':
+            result = subprocess.run(
+                colcon_command('build', args.packages, parallel_workers), check=False)
+            if result.returncode:
+                return result.returncode
+
+        if args.command == 'compile-commands':
+            with open('compile_commands.json', 'w') as output:
+                return subprocess.run(
+                    ['compdb', '-p', 'build', 'list'], stdout=output, check=False).returncode
+
+        result = subprocess.run(
+            colcon_command(args.command, args.packages, parallel_workers, args.tests_to_run),
+            check=False)
+        if testing:
+            # Show results even after failures. Preserve the test invocation's status;
+            # the workspace summary can also contain older results from other packages.
+            subprocess.run(['colcon', 'test-result', '--verbose'], check=False)
+        return result.returncode
+    except OSError as exc:
+        print(f"Error executing colcon {args.command}: {exc}", file=sys.stderr)
+        return 1
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

@@ -59,10 +59,15 @@ repositories:
     type: git
     url: https://github.com/gazebo-release/gz_utils_vendor.git
     version: rolling
+  nvcyc/rosidl_buffer_dev:
+    type: git
+    url: https://github.com/nvcyc/rosidl_buffer_dev.git
+    version: main
   osrf/osrf_testing_tools_cpp:
     type: git
-    url: https://github.com/karsten-nvidia/osrf_testing_tools_cpp.git
-    version: fix-sframe-linking
+    # Temporary until osrf/osrf_testing_tools_cpp#97 is merged.
+    url: https://github.com/nvcyc/osrf_testing_tools_cpp.git
+    version: fix-sframe
   ros-perception/image_common:
     type: git
     url: https://github.com/ros-perception/image_common.git
@@ -255,10 +260,6 @@ repositories:
     type: git
     url: https://github.com/ros2/rcl.git
     version: rolling
-  ros2/rcl_buffer:
-    type: git
-    url: https://github.com/nvcyc/rcl_buffer.git
-    version: rolling-native-buffer
   ros2/rcl_interfaces:
     type: git
     url: https://github.com/ros2/rcl_interfaces.git
@@ -343,6 +344,14 @@ repositories:
     type: git
     url: https://github.com/ros2/rosidl.git
     version: rolling
+  ros2/rosidl_buffer_backends:
+    type: git
+    url: https://github.com/ros2/rosidl_buffer_backends.git
+    version: main
+  ros2/rosidl_buffer_backends_tutorials:
+    type: git
+    url: https://github.com/ros2/rosidl_buffer_backends_tutorials.git
+    version: main
   ros2/rosidl_core:
     type: git
     url: https://github.com/ros2/rosidl_core.git

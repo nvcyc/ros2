@@ -15,11 +15,13 @@ osrf_pycommon = "==0.2.1"
 [tasks]
 clone = { cmd = "vcs import --input ros2.repos src", description = "Clone ROS 2 source repositories", outputs = [ "src/ros2/rcl/README.md"] }
 pull = { cmd = "vcs pull src", description = "Pull latest changes from all source repositories", depends-on = ["clone"] }
-build = { cmd = "scripts/colcon_wrapper.py build {{ packages }}", description = "Build packages and their dependencies", clean-env = true, args = [{arg = "packages", default = ""}], depends-on = ["clone"] }
-test-only = { cmd = "scripts/colcon_wrapper.py test {{ packages }} {% if tests_to_run %}--tests-to-run {{ tests_to_run }}{% endif %}", description = "Run tests for specific packages", clean-env = true, args = [{arg = "packages", default = ""}, {arg = "tests_to_run", default = ""}], depends-on = [] }
-test = { cmd = "scripts/colcon_wrapper.py test {{ packages }} {% if tests_to_run %}--tests-to-run {{ tests_to_run }}{% endif %}", description = "Run tests for specific packages", clean-env = true, args = [{arg = "packages", default = ""}, {arg = "tests_to_run", default = ""}], depends-on = [{task = "build", args = [{packages = "{{ packages }}"}]}] }
-test-up-to = { cmd = "scripts/colcon_wrapper.py test-up-to {{ packages }} {% if tests_to_run %}--tests-to-run {{ tests_to_run }}{% endif %}", description = "Test packages and their dependencies", clean-env = true, args = [{arg = "packages", default = ""}, {arg = "tests_to_run", default = ""}], depends-on = [{task = "build", args = [{packages = "{{ packages }}"}]}] }
-compile-commands = { cmd = "compdb -p build list > compile_commands.json", description = "Generate compile_commands.json for IDE integration", args = [{arg = "packages", default = ""}], depends-on = [{task = "build", args = [{packages = "{{ packages }}"}]}] }
+# Task arguments pass directly to argparse so package lists and quoted test regexes
+# retain their argument boundaries. Test tasks build the same package list first.
+build = { cmd = "python scripts/colcon_wrapper.py build", description = "Build packages and their dependencies", clean-env = true, depends-on = ["clone"] }
+test-only = { cmd = "python scripts/colcon_wrapper.py test", description = "Run tests without rebuilding", clean-env = true }
+test = { cmd = "python scripts/colcon_wrapper.py test --build-first", description = "Build dependencies and test selected packages", clean-env = true, depends-on = ["clone"] }
+test-up-to = { cmd = "python scripts/colcon_wrapper.py test-up-to --build-first", description = "Build and test packages and their dependencies", clean-env = true, depends-on = ["clone"] }
+compile-commands = { cmd = "python scripts/colcon_wrapper.py compile-commands", description = "Build packages and generate compile_commands.json with compdb", clean-env = true, depends-on = ["clone"] }
 list = { cmd = "colcon list --names-only", description = "List all available packages", depends-on = ["clone"] }
 clean = { cmd = "rm -rf build install log", description = "Remove build artifacts" }
 distclean = { cmd = "scripts/distclean.py", description = "Clean build artifacts and source repositories" }
@@ -37,14 +39,12 @@ CUDAToolkit_ROOT="$CONDA_PREFIX"
 QT_QPA_PLATFORM_PLUGIN_PATH="%CONDA_PREFIX%\\Library\\lib\\qt6\\plugins\\platforms"
 
 [target.linux-64.dependencies]
-# CUDA toolkit components (from conda-forge) needed to build the
-# cuda_buffer / cuda_buffer_backend packages. The code uses only the CUDA
-# runtime and driver APIs from C++ (no .cu files), but CMake's
-# FindCUDAToolkit still requires nvcc to discover the toolkit root.
-cuda-version = "==12.6"
-cuda-nvcc = "12.6.*"
-cuda-cudart-dev = "12.6.*"
-cuda-driver-dev = "12.6.*"
+# CUDA 13.1+ supports the GCC 15 toolchain used by current rolling.
+# Keep toolkit components in the same major series; pixi.lock records exact builds.
+cuda-version = ">=13.1,<14"
+cuda-nvcc = ">=13.1,<14"
+cuda-cudart-dev = ">=13.1,<14"
+cuda-driver-dev = ">=13.1,<14"
 
 bash = "==5.2.37"
 coreutils = "==9.5"

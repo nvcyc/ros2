@@ -5,42 +5,72 @@ And it's all open source.
 Full project details on [ROS.org](https://ros.org/)
 
 # Building
-First, install git if not installed already:
-```
-sudo apt install -y git
+
+This development workspace follows ROS 2 rolling and includes
+[`rosidl_buffer_dev`](https://github.com/nvcyc/rosidl_buffer_dev),
+[`rosidl_buffer_backends`](https://github.com/ros2/rosidl_buffer_backends), and
+[`rosidl_buffer_backends_tutorials`](https://github.com/ros2/rosidl_buffer_backends_tutorials).
+
+Install Git and [Pixi](https://pixi.sh) (version 0.78 or newer), then clone this branch:
+
+```bash
+git clone --branch rolling-dev https://github.com/nvcyc/ros2.git
+cd ros2
 ```
 
-Then, install pixi:
+`rosidl_buffer_dev` is private. Configure Git HTTPS authentication for your GitHub
+account with access to that repository before importing sources.
 
-```
-curl -fsSL https://pixi.sh/install.sh | sh
-```
+Build one or more packages and their dependencies:
 
-Now, clone this repository:
-
-```
-git clone https://github.com/karsten-nvidia/ros2.git && cd ros2
+```bash
+pixi run build cuda_buffer cuda_buffer_backend
 ```
 
-Now `pixi` can be used to perform the most important steps. To build a package like rclcpp, use
+The first build installs the Pixi environment and imports the source repositories.
+On Linux, the environment includes CUDA Toolkit >=13.1,<14 and the rolling GCC
+toolchain; the lockfile records exact versions. Running GPU examples and tests
+also requires a compatible NVIDIA driver and GPU on the host. CUDA tooling is
+currently provided by this manifest only on Linux x86-64.
 
-```
-pixi run build rclcpp
+To import sources explicitly, use `pixi run clone`. After changing `ros2.repos`,
+import directly to bypass the clone task’s existing-file cache:
+
+```bash
+pixi run vcs import --input ros2.repos src
 ```
 
-Note that the above command will automatically install the environment and clone all required source code, so it will take a while.
+Build dependencies and test only the named packages, or include dependency tests:
 
-To run tests, use
+```bash
+pixi run test cuda_buffer cuda_buffer_backend
+pixi run test-up-to cuda_buffer_backend
+```
 
-```
-pixi run test rclcpp
+To test without rebuilding, use `pixi run test-only`. Test failures produce a
+nonzero exit status, followed by a workspace-wide `colcon test-result --verbose`
+summary. That summary may include older results from packages outside this run.
+
+Select CTest tests with a quoted regular expression:
+
+```bash
+pixi run test cuda_buffer cuda_buffer_backend --tests-to-run 'allocation|ipc'
 ```
 
-To see all available commands, use
+This filter applies to CTest tests; it does not filter standalone pytest packages.
+Omitting package names builds or tests the whole workspace.
 
+For local build concurrency settings, copy `.env.example` to `.env` and adjust
+`PIXI_PARALLEL_WORKERS`. `.env` is ignored by Git.
+
+The compilation database workflow continues to use compdb:
+
+```bash
+pixi run compile-commands cuda_buffer cuda_buffer_backend
 ```
-pixi task list
-```
+
+Use `pixi task list` to see all commands. When changing dependencies, regenerate
+`pixi.lock` with Pixi 0.78.0, matching the version used by the lockfile CI check.
 
 # Getting Started
 Looking to get started with ROS?
